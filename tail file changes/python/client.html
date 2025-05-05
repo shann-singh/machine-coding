@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Home</title>
+    </head>
+    <body>
+        <h2>Real time change log viewer</h2>
+        <ul id="messageList"></ul>
+
+        <script>
+            const messages = [];
+            const messageList = document.getElementById("messageList");
+            
+            const socket = new WebSocket("ws://localhost:8765");
+
+            socket.onopen = () => {
+                console.log("Websocket connection is established");
+            }
+
+            socket.onmessage = (event) => {
+                const message = event.data;
+                messages.push(message);
+                appendMessageToList(message);
+            }
+
+            socket.onerror = (error) => {
+                console.error("WebSocket error:", error);
+            };
+
+            socket.onclose = () => {
+                console.log("WebSocket connection closed.");
+            };
+
+            function appendMessageToList(message) {
+                const li = document.createElement("li");
+                li.textContent = message;
+                messageList.appendChild(li);
+            }
+
+        </script>
+    </body>
+</html>
